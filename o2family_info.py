@@ -15,7 +15,9 @@ def setup_logger(stderr_log_lvl):
     Create logger that logs to both stderr and log file but with different log levels
     """
     # Remove all handlers from root logger if any
-    logging.basicConfig(level=logging.NOTSET, handlers=[])   # `force=True` was added in Python 3.8 :-(
+    logging.basicConfig(
+        level=logging.NOTSET, handlers=[]
+    )  # `force=True` was added in Python 3.8 :-(
     # Change root logger level from WARNING (default) to NOTSET in order for all messages to be delegated
     logging.getLogger().setLevel(logging.NOTSET)
 
@@ -40,6 +42,7 @@ def setup_logger(stderr_log_lvl):
     logging.getLogger().addHandler(rotating_handler)
 
     return logging.getLogger("root")
+
 
 def main():
     parser = argparse.ArgumentParser(
@@ -75,12 +78,14 @@ def main():
         help="Pokud soubor poskytnutý v '--save-as ...' existuje, přepiš ho",
     )
     parser.add_argument(
-        "-v", "--verbose",
+        "-v",
+        "--verbose",
         action="store_true",
         help="Show verbose output",
     )
     parser.add_argument(
-        "-d", "--debug",
+        "-d",
+        "--debug",
         action="store_true",
         help="Show debug output",
     )
@@ -104,7 +109,7 @@ def main():
 
     # Log in
     session.post("https://moje.o2family.cz/", data=data)
-    logger.debug(f"Cookies after login: {session.cookies}")   # Expect to see PHPSESSID
+    logger.debug(f"Cookies after login: {session.cookies}")  # Expect to see PHPSESSID
 
     # Get info
     response = session.get(f"https://moje.o2family.cz/api/tariff-info/{args.id}")
@@ -116,9 +121,11 @@ def main():
                 os.remove(args.save_as)
                 logger.debug(f"Removed {args.save_as}")
             else:
-                logger.error(f"File {args.save_as} already exists. If you want to override it, use option '--force'")
+                logger.error(
+                    f"File {args.save_as} already exists. If you want to override it, use option '--force'"
+                )
                 return 1
-        with open(args.save_as, 'w') as fp:
+        with open(args.save_as, "w") as fp:
             json.dump(response.json(), fp)
             logger.info(f"Dumped data to {args.save_as}")
 
